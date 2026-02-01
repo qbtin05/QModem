@@ -240,6 +240,7 @@ jobs:
           for package in $arch_package; do
             make package/$package/compile -j$(nproc) || true
           done
+          ls bin/packages
           ls bin/packages/${{ env.SDK_ARCH }}/qmodem/
           echo "status=success" >> $GITHUB_OUTPUT
           echo "FIRMWARE=$(pwd)/bin/packages/${{ env.SDK_ARCH }}/qmodem/" >> $GITHUB_ENV
