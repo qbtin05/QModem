@@ -223,6 +223,9 @@ jobs:
           echo "CONFIG_LUCI_LANG_zh_Hans=y" >> .config
           
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
+          sed -i '/^CONFIG_PACKAGE_apk/d' .config
+          sed -i '/^CONFIG_USE_APK/d' .config
+
           make defconfig
           make clean
           make download -j$(nproc) || true
