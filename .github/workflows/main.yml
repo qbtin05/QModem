@@ -236,6 +236,9 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
           sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
+          echo "CONFIG_USE_APK=n" >> .config
+          make defconfig
+          sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
           make defconfig
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
