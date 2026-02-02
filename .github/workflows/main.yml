@@ -26,7 +26,8 @@ env:
 
 jobs:
   job_auto_tag:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     # 只在 main 分支推送且包含 version.mk 文件变更时运行
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     outputs:
@@ -109,7 +110,8 @@ jobs:
         echo "tag_created=true" >> $GITHUB_OUTPUT
 
   job_prepare:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [job_auto_tag]
     if: always()  # 总是运行，不管 auto_tag 是否运行或是否成功
     outputs:
@@ -166,7 +168,8 @@ jobs:
     strategy:
       matrix:
         build_arch: ['arm64_ipk']
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Install packages
         run: |
@@ -262,7 +265,8 @@ jobs:
   job_release_artifacts:
     name: Release Artifacts
     needs: [job_build_qmodem, job_prepare]
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ needs.job_prepare.outputs.push_type == 'tag' }}
     steps:
       - name: Download all artifacts
