@@ -259,7 +259,7 @@ jobs:
             sed -i 's/^CONFIG_USE_APK=y/# CONFIG_USE_APK is not set/' .config
             make defconfig
           fi
-
+          cat .config
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
           for package in $generic_package; do
