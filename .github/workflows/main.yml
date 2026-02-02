@@ -224,19 +224,6 @@ jobs:
           
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
           
-          # 先移除所有 CONFIG_USE_APK 設定（含你之前寫的 =n）
-          sed -i '/^CONFIG_USE_APK=/d;/^# CONFIG_USE_APK is not set/d' .config
-          
-          # 用正確方式關閉
-          echo "# CONFIG_USE_APK is not set" >> .config
-          make defconfig
-          
-          # defconfig 若又打回 y，立即再關並再 defconfig（確保最後生效）
-          if grep -q '^CONFIG_USE_APK=y' .config; then
-            sed -i 's/^CONFIG_USE_APK=y/# CONFIG_USE_APK is not set/' .config
-            make defconfig
-          fi
-
           make clean
           make download -j$(nproc) || true
 
@@ -247,18 +234,6 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
 
-          # 先移除所有 CONFIG_USE_APK 設定（含你之前寫的 =n）
-          sed -i '/^CONFIG_USE_APK=/d;/^# CONFIG_USE_APK is not set/d' .config
-          
-          # 用正確方式關閉
-          echo "# CONFIG_USE_APK is not set" >> .config
-          make defconfig
-          
-          # defconfig 若又打回 y，立即再關並再 defconfig（確保最後生效）
-          if grep -q '^CONFIG_USE_APK=y' .config; then
-            sed -i 's/^CONFIG_USE_APK=y/# CONFIG_USE_APK is not set/' .config
-            make defconfig
-          fi
           cat .config
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
