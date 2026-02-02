@@ -239,9 +239,8 @@ jobs:
           sed -i '/CONFIG_USE_APK/d' .config
           echo "CONFIG_USE_APK=n" >> .config
           make defconfig
-          # Verify CONFIG_USE_APK is not set to y after defconfig
+          # Verify and force CONFIG_USE_APK to remain disabled after defconfig
           sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
-          make defconfig
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
           for package in $generic_package; do
