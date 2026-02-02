@@ -221,10 +221,11 @@ jobs:
           echo "CONFIG_ALL=n" >> .config
           echo "CONFIG_AUTOREMOVE=n" >> .config
           echo "CONFIG_LUCI_LANG_zh_Hans=y" >> .config
+          echo "CONFIG_USE_APK=n" >> .config
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
           make defconfig
           sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
-          echo "CONFIG_USE_APK=n" >> .config
+          make defconfig
           make clean
           make download -j$(nproc) || true
 
@@ -235,7 +236,7 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
           sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
-          echo "CONFIG_USE_APK=n" >> .config
+          make defconfig
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
           for package in $generic_package; do
