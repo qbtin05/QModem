@@ -140,7 +140,6 @@ jobs:
             echo "is_pr=${is_pr}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        if: 
         uses: actions/checkout@v2
         with:
           path: 'qmodem'
