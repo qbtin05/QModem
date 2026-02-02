@@ -1,4 +1,4 @@
-name: "Auto compile with OpenWrt SDK"
+  name: "Auto compile with OpenWrt SDK"
 on:
   workflow_dispatch:
   push:
@@ -228,7 +228,7 @@ jobs:
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
           sed -i '/^CONFIG_PACKAGE_apk/d' .config
           sed -i '/^CONFIG_USE_APK/d' .config
-          ./scripts/config.pl -d CONFIG_USE_APK
+          ./scripts/config -d CONFIG_USE_APK
           #cat .config
           make defconfig
           cat .config
