@@ -236,10 +236,12 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
           # Ensure CONFIG_USE_APK is disabled before running defconfig
+          # Remove any existing CONFIG_USE_APK setting to avoid conflicts
           sed -i '/CONFIG_USE_APK/d' .config
           echo "CONFIG_USE_APK=n" >> .config
           make defconfig
           # Verify and force CONFIG_USE_APK to remain disabled after defconfig
+          # This is necessary because defconfig may reset it to 'y' in OpenWrt 25.12.0-rc3
           sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
