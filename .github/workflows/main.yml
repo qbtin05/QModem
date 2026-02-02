@@ -190,7 +190,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: sdk
-          key: openwrt-sdk-${{ matrix.build_arch }}
+          key: openwrt-sdk-${{ matrix.build_arch }}-ipk
 
       - name: Initialization environment
         if: steps.cache-sdk.outputs.cache-hit != 'true'
@@ -235,9 +235,12 @@ jobs:
           cd sdk
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
-          make defconfig
-          sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
+          # Ensure CONFIG_USE_APK is disabled before running defconfig
+          sed -i '/CONFIG_USE_APK/d' .config
           echo "CONFIG_USE_APK=n" >> .config
+          make defconfig
+          # Verify CONFIG_USE_APK is not set to y after defconfig
+          sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
           make defconfig
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
