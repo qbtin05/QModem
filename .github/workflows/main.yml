@@ -228,11 +228,12 @@ jobs:
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
           sed -i '/^CONFIG_PACKAGE_apk/d' .config
           sed -i '/^CONFIG_USE_APK/d' .config
-          cat .config
+          #cat .config
           make defconfig
+          cat .config
           make clean
           make download -j$(nproc) || true
-          cat .config
+          #cat .config
 
       - name: Compile QModem
         id: compile
