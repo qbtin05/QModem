@@ -221,11 +221,22 @@ jobs:
           echo "CONFIG_ALL=n" >> .config
           echo "CONFIG_AUTOREMOVE=n" >> .config
           echo "CONFIG_LUCI_LANG_zh_Hans=y" >> .config
-          echo "CONFIG_USE_APK=n" >> .config
+          
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
+          
+          # 先移除所有 CONFIG_USE_APK 設定（含你之前寫的 =n）
+          sed -i '/^CONFIG_USE_APK=/d;/^# CONFIG_USE_APK is not set/d' .config
+          
+          # 用正確方式關閉
+          echo "# CONFIG_USE_APK is not set" >> .config
           make defconfig
-          sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
-          make defconfig
+          
+          # defconfig 若又打回 y，立即再關並再 defconfig（確保最後生效）
+          if grep -q '^CONFIG_USE_APK=y' .config; then
+            sed -i 's/^CONFIG_USE_APK=y/# CONFIG_USE_APK is not set/' .config
+            make defconfig
+          fi
+
           make clean
           make download -j$(nproc) || true
 
@@ -235,14 +246,20 @@ jobs:
           cd sdk
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
-          # Ensure CONFIG_USE_APK is disabled before running defconfig
-          # Remove any existing CONFIG_USE_APK setting to avoid conflicts
-          sed -i '/CONFIG_USE_APK/d' .config
-          echo "CONFIG_USE_APK=n" >> .config
+
+          # 先移除所有 CONFIG_USE_APK 設定（含你之前寫的 =n）
+          sed -i '/^CONFIG_USE_APK=/d;/^# CONFIG_USE_APK is not set/d' .config
+          
+          # 用正確方式關閉
+          echo "# CONFIG_USE_APK is not set" >> .config
           make defconfig
-          # Verify and force CONFIG_USE_APK to remain disabled after defconfig
-          # This is necessary because defconfig may reset it to 'y' in OpenWrt 25.12.0-rc3
-          sed -i 's/CONFIG_USE_APK=y/CONFIG_USE_APK=n/g' .config
+          
+          # defconfig 若又打回 y，立即再關並再 defconfig（確保最後生效）
+          if grep -q '^CONFIG_USE_APK=y' .config; then
+            sed -i 's/^CONFIG_USE_APK=y/# CONFIG_USE_APK is not set/' .config
+            make defconfig
+          fi
+
           generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
           for package in $generic_package; do
