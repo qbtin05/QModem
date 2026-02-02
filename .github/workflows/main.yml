@@ -1,4 +1,4 @@
-  name: "Auto compile with OpenWrt SDK"
+name: "Auto compile with OpenWrt SDK"
 on:
   workflow_dispatch:
   push:
