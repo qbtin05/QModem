@@ -190,12 +190,12 @@ jobs:
       - name: Import Env
         run: cat qmodem/.github/workflows/${{ matrix.build_arch }}.env >> "$GITHUB_ENV"
 
-      - name: Cache openwrt SDK
-        id: cache-sdk
-        uses: actions/cache@v3
-        with:
-          path: sdk
-          key: openwrt-sdk-${{ matrix.build_arch }}-ipk
+      # - name: Cache openwrt SDK
+      #   id: cache-sdk
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: sdk
+      #     key: openwrt-sdk-${{ matrix.build_arch }}-ipk
 
       - name: Initialization environment
         #if: steps.cache-sdk.outputs.cache-hit != 'true'
