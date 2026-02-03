@@ -352,11 +352,11 @@ jobs:
           arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
           for package in $generic_package; do
             # make package/$package/compile -j$(nproc)  || true
-            make package/$package/compile -j$(nproc) V=s
+            make package/$package/compile -j$(nproc) V=sc
           done
           for package in $arch_package; do
             # make package/$package/compile -j$(nproc) || true
-            make package/$package/compile -j$(nproc) V=s
+            make package/$package/compile -j$(nproc) V=sc
           done
           ls bin/packages
           ls bin/packages/${{ env.SDK_ARCH }}/qmodem/
