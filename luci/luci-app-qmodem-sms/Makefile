@@ -9,6 +9,7 @@ include ../../version.mk
 PKG_NAME:=luci-app-qmodem-sms
 LUCI_TITLE:=Luci qwrt modem sms support
 PKG_VERSION:=$(QMODEM_VERSION)
+PKG_RELEASE:=$(QMODEM_RELEASE)
 LUCI_PKGARCH:=all
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE
