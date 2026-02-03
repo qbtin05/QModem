@@ -19,3 +19,4 @@ LUCI_DEPENDS:=+luci-app-qmodem +sms-forwarder
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
+$(eval $(call BuildPackage,luci-app-qmodem-sms))
