@@ -250,6 +250,8 @@ jobs:
           make download -j$(nproc) || true
           #cat .config
 
+      # This step ensures Kconfig fixes are applied when SDK is cached
+      # (the fixes in the initialization step only run when cache-hit != 'true')
       - name: Fix Kconfig Dependencies
         run: |
           chmod +x qmodem/.github/workflows/fix-kconfig-dependencies.sh
