@@ -247,7 +247,7 @@ jobs:
           #cat .config
           make defconfig
           #cat .config
-          make clean
+          # Do NOT run "make clean" on SDK or we lose prebuilt kernel artifacts
           make download -j$(nproc) || true
           #cat .config
 
