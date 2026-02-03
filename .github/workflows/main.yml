@@ -223,7 +223,7 @@ jobs:
           key: openwrt-sdk-${{ matrix.build_arch }}-ipk
 
       - name: Initialization environment
-        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        #if: steps.cache-sdk.outputs.cache-hit != 'true'
         env:
           url_sdk: ${{ env.SDK_URL }}${{ env.SDK_NAME}}.${{ env.SDK_EXT }}
         run: |
