@@ -337,21 +337,20 @@ jobs:
       - name: Compile QModem
         id: compile
         run: |
-          # Ensure CMake 3.31+ is in PATH for the build
+          LOG_FILE="${GITHUB_WORKSPACE}/qmodem_build.log"
+    : > "$LOG_FILE"
+          
           if [ -d "${CMAKE_DIR}" ]; then
             export PATH="${CMAKE_DIR}/bin:$PATH"
-            echo "Using CMake from: ${CMAKE_DIR}/bin"
-            cmake --version
+            echo "Using CMake from: ${CMAKE_DIR}/bin" | tee -a "$LOG_FILE"
+            cmake --version | tee -a "$LOG_FILE"
           fi
-          
+      
           cd sdk
-          ./scripts/feeds update qmodem
-          ./scripts/feeds install -a -p qmodem
-
+          ./scripts/feeds update qmodem | tee -a "$LOG_FILE"
+          ./scripts/feeds install -a -p qmodem | tee -a "$LOG_FILE"
+      
           clean_list() {
-            # 1) remove CR (windows line endings)
-            # 2) strip comments
-            # 3) drop blank lines
             tr -d '\r' < "$1" | sed -e 's/#.*$//' -e '/^[[:space:]]*$/d'
           }
       
@@ -359,15 +358,15 @@ jobs:
             local listfile="$1"
             while IFS= read -r package; do
               echo "::group::Building ${package}"
-              # tee: keep a persistent log even if GitHub web log is not accessible
-              make "package/${package}/compile" -j"$(nproc)" V=sc 2>&1 | tee -a "../qmodem_build.log"
+              echo "=== Building ${package} ===" | tee -a "$LOG_FILE"
+              make "package/${package}/compile" -j"$(nproc)" V=sc 2>&1 | tee -a "$LOG_FILE"
               echo "::endgroup::"
             done < <(clean_list "$listfile")
           }
       
           build_list ../qmodem/.github/workflows/qmodem_package_generic
           build_list ../qmodem/.github/workflows/qmodem_package_arch
-      
+
           ls -R bin/packages || true
           ls "bin/packages/${SDK_ARCH}/qmodem/" || true
 
