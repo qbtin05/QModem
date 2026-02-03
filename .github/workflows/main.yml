@@ -293,20 +293,35 @@ jobs:
           
           # Extract version number using sed for better portability
           CMAKE_VER=$(cmake --version | sed -n 's/cmake version \([0-9]*\.[0-9]*\).*/\1/p' | head -1)
+          
+          # Validate that we successfully extracted a version
+          if [ -z "$CMAKE_VER" ]; then
+            echo "ERROR: Failed to extract CMake version from output"
+            exit 1
+          fi
+          
           echo "Detected CMake version: $CMAKE_VER"
           
           # Compare versions (split on . and compare major.minor)
           MAJOR=$(echo $CMAKE_VER | cut -d. -f1)
           MINOR=$(echo $CMAKE_VER | cut -d. -f2)
           
-          # Use separate conditionals for clarity and compatibility
+          # Validate MAJOR and MINOR are not empty
+          if [ -z "$MAJOR" ] || [ -z "$MINOR" ]; then
+            echo "ERROR: Invalid version format: $CMAKE_VER"
+            exit 1
+          fi
+          
+          # Check version requirements
+          VERSION_ERROR="ERROR: CMake version $CMAKE_VER is less than required 3.31"
+          
           if [ "$MAJOR" -lt 3 ]; then
-            echo "ERROR: CMake version $CMAKE_VER is less than required 3.31"
+            echo "$VERSION_ERROR"
             exit 1
           fi
           
           if [ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 31 ]; then
-            echo "ERROR: CMake version $CMAKE_VER is less than required 3.31"
+            echo "$VERSION_ERROR"
             exit 1
           fi
           
