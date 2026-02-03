@@ -324,14 +324,18 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
       
-      
+          clean_list() {
+            tr -d '\r' < "$1" | sed -e 's/#.*$//' -e '/^[[:space:]]*$/d'
+          }
+          
           build_list() {
+            local listfile="$1"
             while IFS= read -r package; do
               echo "::group::Building ${package}"
               echo "=== Building ${package} ==="
               make "package/${package}/compile" -j"$(nproc)" V=sc
               echo "::endgroup::"
-            done
+            done < <(clean_list "$listfile")
           }
       
           build_list ../qmodem/.github/workflows/qmodem_package_generic
