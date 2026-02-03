@@ -17,3 +17,4 @@ PKG_MAINTAINER:=Tom <fjrcn@outlook.com>
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
+$(eval $(call BuildPackage,luci-app-qmodem-monitor))
