@@ -356,6 +356,7 @@ jobs:
               echo "=== Building ${package} ==="
               make "package/${package}/compile" -j"$(nproc)" V=sc
               echo "::endgroup::"
+            done
           }
       
           build_list ../qmodem/.github/workflows/qmodem_package_generic
