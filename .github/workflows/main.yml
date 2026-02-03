@@ -1,25 +1,6 @@
 name: "Auto compile with OpenWrt SDK"
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - '*'    
-    tags:
-      - 'v*'
-    paths-ignore:
-      - "docs/**"
-      - "README.md"
-      - "README.en.md"
-      - ".github/workflows/**"
-      - ".github/**"
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - "docs/**"
-      - "README*.md"
-      - ".github/workflows/**"
-      - ".github/**"
 
 env:
   TZ: Asia/Shanghai
@@ -29,7 +10,7 @@ jobs:
     #runs-on: ubuntu-latest
     runs-on: self-hosted
     # 只在 main 分支推送且包含 version.mk 文件变更时运行
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     outputs:
       new_tag: ${{ steps.create_tag.outputs.tag_name }}
       tag_created: ${{ steps.create_tag.outputs.tag_created }}
@@ -45,13 +26,7 @@ jobs:
       id: check_version_change
       run: |
         # 检查version.mk是否在这次提交中被修改
-        if git diff --name-only HEAD~1 HEAD | grep -q "^version\.mk$"; then
-          echo "version.mk was modified in this commit"
-          echo "version_changed=true" >> $GITHUB_OUTPUT
-        else
-          echo "version.mk was not modified in this commit"
-          echo "version_changed=false" >> $GITHUB_OUTPUT
-        fi
+        echo "version_changed=true" >> $GITHUB_OUTPUT
     
     - name: Extract version from version.mk
       id: extract_version
