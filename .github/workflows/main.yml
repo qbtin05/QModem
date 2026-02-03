@@ -180,11 +180,30 @@ jobs:
           
           # Install CMake 3.31+ to meet rpcd-mod-luci requirements
           CMAKE_VERSION="3.31.5"
-          wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
-          sudo tar -xzf cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz -C /opt
-          sudo ln -sf /opt/cmake-${CMAKE_VERSION}-linux-x86_64/bin/cmake /usr/local/bin/cmake
-          rm cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
+          CMAKE_DIR="/opt/cmake-${CMAKE_VERSION}-linux-x86_64"
+          
+          # Only download and install if not already present
+          if [ ! -d "${CMAKE_DIR}" ]; then
+            echo "Installing CMake ${CMAKE_VERSION}..."
+            wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
+            sudo tar -xzf cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz -C /opt
+            rm cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
+          else
+            echo "CMake ${CMAKE_VERSION} already installed at ${CMAKE_DIR}"
+          fi
+          
+          # Force update symlinks to ensure we're using the correct version
+          sudo ln -sf ${CMAKE_DIR}/bin/cmake /usr/local/bin/cmake
+          sudo ln -sf ${CMAKE_DIR}/bin/ctest /usr/local/bin/ctest
+          sudo ln -sf ${CMAKE_DIR}/bin/cpack /usr/local/bin/cpack
+          
+          # Add to PATH for this step and verify
+          export PATH="${CMAKE_DIR}/bin:$PATH"
+          echo "CMake version check:"
           cmake --version
+          
+          # Export CMAKE_DIR to GITHUB_ENV for subsequent steps
+          echo "CMAKE_DIR=${CMAKE_DIR}" >> $GITHUB_ENV
 
       
       - name: Checkout
@@ -256,6 +275,36 @@ jobs:
         run: |
           chmod +x qmodem/.github/workflows/fix-kconfig-dependencies.sh
           qmodem/.github/workflows/fix-kconfig-dependencies.sh sdk
+
+      - name: Verify CMake Version
+        run: |
+          # Ensure CMake 3.31+ is in PATH
+          if [ -d "${CMAKE_DIR}" ]; then
+            export PATH="${CMAKE_DIR}/bin:$PATH"
+            echo "PATH=${CMAKE_DIR}/bin:$PATH" >> $GITHUB_ENV
+          fi
+          
+          echo "CMake version verification:"
+          cmake --version
+          
+          # Check if CMake version is at least 3.31
+          CMAKE_VERSION_OUTPUT=$(cmake --version | head -n1)
+          echo "Found: $CMAKE_VERSION_OUTPUT"
+          
+          # Extract version number
+          CMAKE_VER=$(cmake --version | grep -oP 'cmake version \K[0-9]+\.[0-9]+' | head -1)
+          echo "Detected CMake version: $CMAKE_VER"
+          
+          # Compare versions (split on . and compare major.minor)
+          MAJOR=$(echo $CMAKE_VER | cut -d. -f1)
+          MINOR=$(echo $CMAKE_VER | cut -d. -f2)
+          
+          if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 31 ]); then
+            echo "ERROR: CMake version $CMAKE_VER is less than required 3.31"
+            exit 1
+          fi
+          
+          echo "✅ CMake version check passed: $CMAKE_VER >= 3.31"
 
       - name: Compile QModem
         id: compile
