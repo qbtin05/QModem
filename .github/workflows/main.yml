@@ -318,6 +318,11 @@ jobs:
             export PATH="${CMAKE_DIR}/bin:$PATH"
             echo "Using CMake from: ${CMAKE_DIR}/bin"
             cmake --version
+            # Override SDK host tools to use the required CMake 3.31+
+            mkdir -p sdk/staging_dir/host/bin
+            ln -sf "${CMAKE_DIR}/bin/cmake" sdk/staging_dir/host/bin/cmake
+            ln -sf "${CMAKE_DIR}/bin/ctest" sdk/staging_dir/host/bin/ctest
+            ln -sf "${CMAKE_DIR}/bin/cpack" sdk/staging_dir/host/bin/cpack
           fi
       
           cd sdk
