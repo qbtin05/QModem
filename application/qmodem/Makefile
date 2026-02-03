@@ -7,6 +7,9 @@ include ../../version.mk
 PKG_NAME:=qmodem
 PKG_RELEASE:=$(QMODEM_RELEASE)
 PKG_VERSION:=$(QMODEM_VERSION)
+PKG_LICENSE:=Custom
+PKG_LICENSE_FILES:=../../LICENSE
+PKG_MAINTAINER:=Tom <fjrcn@outlook.com>
 
 include $(INCLUDE_DIR)/package.mk
 
