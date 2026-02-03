@@ -348,20 +348,38 @@ jobs:
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
 
-          generic_package=$(cat ../qmodem/.github/workflows/qmodem_package_generic)
-          arch_package=$(cat ../qmodem/.github/workflows/qmodem_package_arch)
-          for package in $generic_package; do
-            # make package/$package/compile -j$(nproc)  || true
-            make package/$package/compile -j$(nproc) V=sc
-          done
-          for package in $arch_package; do
-            # make package/$package/compile -j$(nproc) || true
-            make package/$package/compile -j$(nproc) V=sc
-          done
-          ls bin/packages
-          ls bin/packages/${{ env.SDK_ARCH }}/qmodem/
+          clean_list() {
+            # 1) remove CR (windows line endings)
+            # 2) strip comments
+            # 3) drop blank lines
+            tr -d '\r' < "$1" | sed -e 's/#.*$//' -e '/^[[:space:]]*$/d'
+          }
+      
+          build_list() {
+            local listfile="$1"
+            while IFS= read -r package; do
+              echo "::group::Building ${package}"
+              # tee: keep a persistent log even if GitHub web log is not accessible
+              make "package/${package}/compile" -j"$(nproc)" V=sc 2>&1 | tee -a "../qmodem_build.log"
+              echo "::endgroup::"
+            done < <(clean_list "$listfile")
+          }
+      
+          build_list ../qmodem/.github/workflows/qmodem_package_generic
+          build_list ../qmodem/.github/workflows/qmodem_package_arch
+      
+          ls -R bin/packages || true
+          ls "bin/packages/${SDK_ARCH}/qmodem/" || true
+
           echo "status=success" >> $GITHUB_OUTPUT
           echo "FIRMWARE=$(pwd)/bin/packages/${{ env.SDK_ARCH }}/qmodem/" >> $GITHUB_ENV
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qmodem-build-log
+          path: sdk/../qmodem_build.log
 
       - name: Upload QModem
         if: ${{ steps.compile.outputs.status == 'success' }}
