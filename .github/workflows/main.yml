@@ -177,6 +177,14 @@ jobs:
           sudo -E apt-get -qq install python3 python3-pyelftools swig zstd build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-venv rsync unzip zlib1g-dev file wget
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
+          
+          # Install CMake 3.31+ to meet rpcd-mod-luci requirements
+          CMAKE_VERSION="3.31.5"
+          wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
+          sudo tar -xzf cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz -C /opt
+          sudo ln -sf /opt/cmake-${CMAKE_VERSION}-linux-x86_64/bin/cmake /usr/local/bin/cmake
+          rm cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz
+          cmake --version
 
       
       - name: Checkout
@@ -219,6 +227,13 @@ jobs:
           cd sdk
           ./scripts/feeds update qmodem
           ./scripts/feeds install -a -p qmodem
+          cd ..
+          
+          # Fix recursive Kconfig dependencies
+          chmod +x qmodem/.github/workflows/fix-kconfig-dependencies.sh
+          qmodem/.github/workflows/fix-kconfig-dependencies.sh sdk
+          
+          cd sdk
           echo "CONFIG_ALL_NONSHARED=n" > .config
           echo "CONFIG_ALL_KMODS=n" >> .config
           echo "CONFIG_ALL=n" >> .config
@@ -234,6 +249,13 @@ jobs:
           make clean
           make download -j$(nproc) || true
           #cat .config
+
+      # This step ensures Kconfig fixes are applied when SDK is cached
+      # (the fixes in the initialization step only run when cache-hit != 'true')
+      - name: Fix Kconfig Dependencies
+        run: |
+          chmod +x qmodem/.github/workflows/fix-kconfig-dependencies.sh
+          qmodem/.github/workflows/fix-kconfig-dependencies.sh sdk
 
       - name: Compile QModem
         id: compile
