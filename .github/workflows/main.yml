@@ -142,7 +142,7 @@ jobs:
             echo "is_pr=${is_pr}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'qmodem'
 
@@ -206,7 +206,7 @@ jobs:
 
       
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'qmodem'
 
@@ -216,7 +216,7 @@ jobs:
 
       - name: Cache openwrt SDK
         id: cache-sdk
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: sdk
           key: openwrt-sdk-${{ matrix.build_arch }}-ipk
