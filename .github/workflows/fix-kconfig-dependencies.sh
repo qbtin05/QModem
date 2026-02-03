@@ -13,8 +13,9 @@ echo "Fixing recursive Kconfig dependencies in ${SDK_DIR}..."
 if [ -f "${SDK_DIR}/Config-build.in" ]; then
     echo "Fixing base-files / busybox-selinux circular dependency..."
     # Remove the 'select PACKAGE_busybox-selinux' from PACKAGE_base-files config
-    sed -i '/config PACKAGE_base-files/,/^config /{
-        /select PACKAGE_busybox-selinux/d
+    # More specific pattern to avoid affecting other configs
+    sed -i '/^[[:space:]]*config PACKAGE_base-files$/,/^[[:space:]]*config [A-Z]/{
+        /^[[:space:]]*select PACKAGE_busybox-selinux$/d
     }' "${SDK_DIR}/Config-build.in" || true
 fi
 

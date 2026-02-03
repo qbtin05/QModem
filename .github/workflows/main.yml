@@ -291,15 +291,21 @@ jobs:
           CMAKE_VERSION_OUTPUT=$(cmake --version | head -n1)
           echo "Found: $CMAKE_VERSION_OUTPUT"
           
-          # Extract version number
-          CMAKE_VER=$(cmake --version | grep -oP 'cmake version \K[0-9]+\.[0-9]+' | head -1)
+          # Extract version number using sed for better portability
+          CMAKE_VER=$(cmake --version | sed -n 's/cmake version \([0-9]*\.[0-9]*\).*/\1/p' | head -1)
           echo "Detected CMake version: $CMAKE_VER"
           
           # Compare versions (split on . and compare major.minor)
           MAJOR=$(echo $CMAKE_VER | cut -d. -f1)
           MINOR=$(echo $CMAKE_VER | cut -d. -f2)
           
-          if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 31 ]); then
+          # Use separate conditionals for clarity and compatibility
+          if [ "$MAJOR" -lt 3 ]; then
+            echo "ERROR: CMake version $CMAKE_VER is less than required 3.31"
+            exit 1
+          fi
+          
+          if [ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 31 ]; then
             echo "ERROR: CMake version $CMAKE_VER is less than required 3.31"
             exit 1
           fi
