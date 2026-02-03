@@ -337,31 +337,25 @@ jobs:
       - name: Compile QModem
         id: compile
         run: |
-          LOG_FILE="${GITHUB_WORKSPACE}/qmodem_build.log"
-          : > "$LOG_FILE"
+
           
           if [ -d "${CMAKE_DIR}" ]; then
             export PATH="${CMAKE_DIR}/bin:$PATH"
-            echo "Using CMake from: ${CMAKE_DIR}/bin" | tee -a "$LOG_FILE"
-            cmake --version | tee -a "$LOG_FILE"
+            echo "Using CMake from: ${CMAKE_DIR}/bin"
+            cmake --version
           fi
       
           cd sdk
-          ./scripts/feeds update qmodem | tee -a "$LOG_FILE"
-          ./scripts/feeds install -a -p qmodem | tee -a "$LOG_FILE"
+          ./scripts/feeds update qmodem
+          ./scripts/feeds install -a -p qmodem
       
-          clean_list() {
-            tr -d '\r' < "$1" | sed -e 's/#.*$//' -e '/^[[:space:]]*$/d'
-          }
       
           build_list() {
-            local listfile="$1"
             while IFS= read -r package; do
               echo "::group::Building ${package}"
-              echo "=== Building ${package} ===" | tee -a "$LOG_FILE"
-              make "package/${package}/compile" -j"$(nproc)" V=sc 2>&1 | tee -a "$LOG_FILE"
+              echo "=== Building ${package} ==="
+              make "package/${package}/compile" -j"$(nproc)" V=sc
               echo "::endgroup::"
-            done < <(clean_list "$listfile")
           }
       
           build_list ../qmodem/.github/workflows/qmodem_package_generic
@@ -372,13 +366,6 @@ jobs:
 
           echo "status=success" >> $GITHUB_OUTPUT
           echo "FIRMWARE=$(pwd)/bin/packages/${{ env.SDK_ARCH }}/qmodem/" >> $GITHUB_ENV
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: qmodem-build-log
-          path: qmodem_build.log
 
       - name: Upload QModem
         if: ${{ steps.compile.outputs.status == 'success' }}
