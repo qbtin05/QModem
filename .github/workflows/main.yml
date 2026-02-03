@@ -338,7 +338,7 @@ jobs:
         id: compile
         run: |
           LOG_FILE="${GITHUB_WORKSPACE}/qmodem_build.log"
-    : > "$LOG_FILE"
+          : > "$LOG_FILE"
           
           if [ -d "${CMAKE_DIR}" ]; then
             export PATH="${CMAKE_DIR}/bin:$PATH"
@@ -378,7 +378,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: qmodem-build-log
-          path: sdk/../qmodem_build.log
+          path: qmodem_build.log
 
       - name: Upload QModem
         if: ${{ steps.compile.outputs.status == 'success' }}
