@@ -228,8 +228,6 @@ jobs:
           cat ../qmodem/.github/workflows/openwrt_package.config >> .config
           sed -i '/^CONFIG_PACKAGE_apk/d' .config
           sed -i '/^CONFIG_USE_APK/d' .config
-          ls ./scripts/config
-          ./scripts/config -d CONFIG_USE_APK
           #cat .config
           make defconfig
           cat .config
