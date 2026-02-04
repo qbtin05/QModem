@@ -97,7 +97,7 @@
 
 要为现有标签创建发布版本：
 
-1. 访问 GitHub 仓库中的 [Actions 标签页](https://github.com/qbtin05/QModem/actions)
+1. 访问 GitHub 仓库中的 Actions 标签页
 2. 选择 "Auto compile with OpenWrt SDK" 工作流
 3. 点击 "Run workflow"（运行工作流）
 4. 在 "Tag to build and release"（要构建和发布的标签）字段中输入标签名称（例如 `v1.0.54`）

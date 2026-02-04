@@ -115,7 +115,7 @@ This project uses GitHub Actions to automatically create releases:
 
 To create a release for an existing tag:
 
-1. Go to the [Actions tab](https://github.com/qbtin05/QModem/actions) in the GitHub repository
+1. Go to the Actions tab in the GitHub repository
 2. Select the "Auto compile with OpenWrt SDK" workflow
 3. Click "Run workflow"
 4. Enter the tag name (e.g., `v1.0.54`) in the "Tag to build and release" field
