@@ -378,18 +378,6 @@ jobs:
           name: Release Note
           path: release_note
 
-      - name: Create releases directory
-        run: mkdir -p releases
-
-      - name: Package artifacts into tar.gz
-        run: |
-          for dir in artifacts/*; do
-            if [ -d "$dir" ]; then
-              base_name=$(basename "$dir")
-              tar -czf "releases/${base_name}.tar.gz" -C "$dir" .
-            fi
-          done
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.2.2
         if: ${{ needs.job_prepare.outputs.push_type == 'tag' }}
@@ -398,4 +386,4 @@ jobs:
           generate_release_notes: true
           tag_name: ${{ needs.job_prepare.outputs.tag_name }}
           prerelease: ${{ contains(needs.job_prepare.outputs.tag_name, '-beta') || contains(needs.job_prepare.outputs.tag_name, '-rc') }}
-          files: releases/*
+          files: artifacts/**/*.ipk
