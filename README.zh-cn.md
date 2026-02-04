@@ -82,6 +82,29 @@
 
 请首先阅读 **[开发者指南](docs/developer-guide.zh-cn.md)** 以了解项目结构和如何开始。
 
+## 创建发布版本
+
+本项目使用 GitHub Actions 自动创建发布版本：
+
+### 自动创建发布版本
+
+- 当推送以 `v` 开头的标签（例如 `v1.0.54`）到仓库时，GitHub Actions 工作流会自动：
+  1. 为不同架构构建 QModem 软件包
+  2. 生成发布说明
+  3. 创建包含构建产物的 GitHub 发布版本
+
+### 手动创建发布版本
+
+要为现有标签创建发布版本：
+
+1. 访问 GitHub 仓库中的 [Actions 标签页](https://github.com/qbtin05/QModem/actions)
+2. 选择 "Auto compile with OpenWrt SDK" 工作流
+3. 点击 "Run workflow"（运行工作流）
+4. 在 "Tag to build and release"（要构建和发布的标签）字段中输入标签名称（例如 `v1.0.54`）
+5. 点击 "Run workflow"（运行工作流）
+
+工作流将构建软件包并为指定的标签创建发布版本。
+
 ## 许可证
 
 本项目采用 Mozilla Public License Version 2.0 许可。详情请参阅 [LICENSE](LICENSE) 文件。

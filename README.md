@@ -100,6 +100,29 @@ Contributions are welcome! Whether it's adding support for a new modem, fixing a
 
 Please start by reading the **[Developer Guide](docs/developer-guide.md)** to understand the project's structure and how to get started.
 
+## Creating Releases
+
+This project uses GitHub Actions to automatically create releases:
+
+### Automatic Release Creation
+
+- When a tag starting with `v` (e.g., `v1.0.54`) is pushed to the repository, a GitHub Actions workflow automatically:
+  1. Builds QModem packages for different architectures
+  2. Generates release notes
+  3. Creates a GitHub release with the built artifacts
+
+### Manual Release Creation
+
+To create a release for an existing tag:
+
+1. Go to the [Actions tab](https://github.com/qbtin05/QModem/actions) in the GitHub repository
+2. Select the "Auto compile with OpenWrt SDK" workflow
+3. Click "Run workflow"
+4. Enter the tag name (e.g., `v1.0.54`) in the "Tag to build and release" field
+5. Click "Run workflow"
+
+The workflow will build the packages and create a release for the specified tag.
+
 ## License
 
 This project is licensed under the Mozilla Public License Version 2.0. Please see the [LICENSE](LICENSE) file for full details.
