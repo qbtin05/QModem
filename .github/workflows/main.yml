@@ -1,6 +1,9 @@
 name: "Auto compile with OpenWrt SDK"
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 env:
   TZ: Asia/Shanghai
