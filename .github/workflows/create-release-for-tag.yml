@@ -1,0 +1,56 @@
+name: Create Release for Existing Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name to create release for (e.g., v1.0.54)'
+        required: true
+        type: string
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      
+      - name: Generate Release Notes
+        id: generate_notes
+        run: |
+          # Extract version from tag
+          VERSION="${{ inputs.tag }}"
+          VERSION="${VERSION#v}"
+          
+          # Create release notes
+          cat > release_notes.md << 'EOF'
+          ## QModem Release ${{ inputs.tag }}
+          
+          This release corresponds to tag ${{ inputs.tag }}.
+          
+          For installation instructions, please refer to the [User Guide](https://github.com/qbtin05/QModem/blob/main/docs/user-guide.md).
+          
+          ### Notes
+          - This is a release created for an existing tag
+          - For pre-built packages, please check the Assets section below
+          - To build from source, clone this tag and follow the build instructions in the documentation
+          EOF
+          
+          echo "Release notes generated"
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
