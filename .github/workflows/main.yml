@@ -14,6 +14,8 @@ jobs:
     outputs:
       new_tag: ${{ steps.create_tag.outputs.tag_name }}
       tag_created: ${{ steps.create_tag.outputs.tag_created }}
+      extracted_tag: ${{ steps.extract_version.outputs.tag_name }}
+      tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
 
     steps:
     - name: Checkout code
@@ -103,6 +105,11 @@ jobs:
             if [[ "${{ needs.job_auto_tag.outputs.tag_created }}" == "true" ]]; then
               echo "New tag created: ${{ needs.job_auto_tag.outputs.new_tag }}"
               echo "tag_name=${{ needs.job_auto_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
+              echo "push_type=tag" >> $GITHUB_OUTPUT
+            # 如果标签已存在，使用提取的标签名
+            elif [[ "${{ needs.job_auto_tag.outputs.tag_exists }}" == "true" ]] && [[ -n "${{ needs.job_auto_tag.outputs.extracted_tag }}" ]]; then
+              echo "Tag already exists: ${{ needs.job_auto_tag.outputs.extracted_tag }}"
+              echo "tag_name=${{ needs.job_auto_tag.outputs.extracted_tag }}" >> $GITHUB_OUTPUT
               echo "push_type=tag" >> $GITHUB_OUTPUT
             elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
               echo "This is a tag push."
