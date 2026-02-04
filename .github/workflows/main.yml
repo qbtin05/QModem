@@ -1,6 +1,11 @@
 name: "Auto compile with OpenWrt SDK"
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and release (e.g., v1.0.54). Leave empty to use current branch.'
+        required: false
+        type: string
   push:
     tags:
       - 'v*'
@@ -102,8 +107,13 @@ jobs:
       - name: Determine push type
         id: determine_push
         run: |
+            # 如果手动指定了tag输入，使用该tag
+            if [[ -n "${{ inputs.tag }}" ]]; then
+              echo "Manual tag specified: ${{ inputs.tag }}"
+              echo "tag_name=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+              echo "push_type=tag" >> $GITHUB_OUTPUT
             # 如果 auto_tag job 创建了新标签，使用新标签
-            if [[ "${{ needs.job_auto_tag.outputs.tag_created }}" == "true" ]]; then
+            elif [[ "${{ needs.job_auto_tag.outputs.tag_created }}" == "true" ]]; then
               echo "New tag created: ${{ needs.job_auto_tag.outputs.new_tag }}"
               echo "tag_name=${{ needs.job_auto_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
               echo "push_type=tag" >> $GITHUB_OUTPUT
@@ -120,10 +130,10 @@ jobs:
             echo "is_pr=${is_pr}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        if: 
         uses: actions/checkout@v2
         with:
           path: 'qmodem'
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Generate Release Note
         id: update_modem_support_list
@@ -188,6 +198,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: 'qmodem'
+          ref: ${{ inputs.tag || github.ref }}
 
 
       - name: Import Env
