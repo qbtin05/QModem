@@ -23,21 +23,19 @@ jobs:
       - name: Generate Release Notes
         id: generate_notes
         run: |
-          # Extract version from tag
-          VERSION="${{ inputs.tag }}"
-          VERSION="${VERSION#v}"
+          TAG_NAME="${{ inputs.tag }}"
           
           # Create release notes
-          cat > release_notes.md << 'EOF'
-          ## QModem Release ${{ inputs.tag }}
+          cat > release_notes.md << EOF
+          ## QModem Release ${TAG_NAME}
           
-          This release corresponds to tag ${{ inputs.tag }}.
+          This release corresponds to tag ${TAG_NAME}.
           
-          For installation instructions, please refer to the [User Guide](https://github.com/qbtin05/QModem/blob/main/docs/user-guide.md).
+          For installation instructions, please refer to the [User Guide](docs/user-guide.md).
           
           ### Notes
           - This is a release created for an existing tag
-          - For pre-built packages, please check the Assets section below
+          - For pre-built packages, please check the Assets section below or use the full build workflow
           - To build from source, clone this tag and follow the build instructions in the documentation
           EOF
           
