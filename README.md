@@ -113,7 +113,19 @@ This project uses GitHub Actions to automatically create releases:
 
 ### Manual Release Creation
 
-To create a release for an existing tag:
+To create a release for an existing tag, you have two options:
+
+#### Quick Release (No Build Required)
+
+1. Go to the Actions tab in the GitHub repository
+2. Select the "Create Release for Existing Tag" workflow
+3. Click "Run workflow"
+4. Enter the tag name (e.g., `v1.0.54`)
+5. Click "Run workflow"
+
+This creates a release immediately without building packages.
+
+#### Full Release with Build
 
 1. Go to the Actions tab in the GitHub repository
 2. Select the "Auto compile with OpenWrt SDK" workflow
@@ -121,7 +133,7 @@ To create a release for an existing tag:
 4. Enter the tag name (e.g., `v1.0.54`) in the "Tag to build and release" field
 5. Click "Run workflow"
 
-The workflow will build the packages and create a release for the specified tag.
+This builds all packages for different architectures and creates a release with the artifacts.
 
 ## License
 
