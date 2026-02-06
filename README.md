@@ -1,28 +1,20 @@
 # QModem (English)
 
-Those who wish to use a pure JS Luci (test version):
+QModem now uses a pure JS Luci frontend (`luci-app-qmodem-next`), which eliminates the dependency on luci-compat and reduces compatibility issues with Luci 21 and later.
 
-Due to popular demand, QModem has introduced a pure JS Luci frontend, which eliminates the dependency on luci-compat and reduces many compatibility issues after Luci 21.
-
-### Usage:
-- Update feeds and install the newly added packages.
-- Navigate to Luci -> Application -> luci-app-qmodem.
-- Remove luci-app-qmodem and luci-app-qmodem-sms/mwam/ttl, etc.
-- Select luci-app-qmodem-next.
-
-### Feature Changes:
-1. Optimized the dial-up configuration interface, redesigned the display logic for dial-up logs and status.
-2. Improved SMS functionality, currently not split into a separate feature. SMS is presented in a dialog box, automatically exported to the router's file system, and supports recording sent messages.
-3. Enhanced the AT debugging and advanced module functionality interface.
+### Key Features:
+1. Optimized dial-up configuration interface with redesigned display logic for dial-up logs and status.
+2. Improved SMS functionality integrated into the main interface. SMS is presented in a dialog box, automatically exported to the router's file system, and supports recording sent messages.
+3. Enhanced AT debugging and advanced module functionality interface.
 4. Improved all settings interfaces.
-5. Used scripts + AI to extract translatable strings, significantly improving translation coverage.
+5. Comprehensive translation support with significantly improved coverage.
 6. SMS forwarding: Read messages are also forwarded.
 
-### Compatibility and Limitations:
-1. Feature removal: MWAN and TTL features are indefinitely removed in this version.
-2. SMS stability: To save development time, the current SMS backend implementation is relatively simple, using JSON as the database.
-3. SMS management: Does not support setting SMS storage location or deleting SMS in the UI. Only automatic deletion is available.
-4. SMS display: Known issue: SMS concatenation is based on timestamp + reference ID, but due to unreliable timestamps provided by some operators and modules, long messages cannot be concatenated correctly.
+### Important Notes:
+1. MWAN and TTL features have been removed in this version.
+2. SMS backend uses JSON as the database for simplicity.
+3. SMS management does not support setting SMS storage location or deleting SMS in the UI. Only automatic deletion is available.
+4. Known issue: SMS concatenation is based on timestamp + reference ID, but due to unreliable timestamps provided by some operators and modules, long messages cannot be concatenated correctly.
 
 ---
 
@@ -47,7 +39,7 @@ This project aims to provide a stable, extensible, and user-friendly solution fo
 - **Broad Hardware Support**: Manages a wide range of USB and PCIe cellular modems from vendors like Quectel, Fibocom, and more.
 - **Intuitive Web Interface**: A clean LuCI interface for at-a-glance status monitoring and configuration.
 - **Advanced Modem Control**: Fine-tune your connection with features like band locking, cell locking, and network mode selection.
-- **SMS and Multi-WAN**: Includes optional plugins for sending/receiving SMS and configuring multi-WAN failover/load balancing.
+- **Integrated SMS**: Built-in SMS functionality for sending and receiving text messages.
 - **Robust and Stable**: Designed for reliability with features like slot-based device binding and optimized AT command handling.
 
 For a complete list of features and capabilities, please see the [User Guide](docs/user-guide.md).
@@ -76,7 +68,7 @@ Perfect for integrating your QModem-powered OpenWrt router into your smart home 
 
 ### Installation
 
-To install QModem, add the custom feed to your OpenWRT build environment and select the `luci-app-qmodem` packages in `make menuconfig`.
+To install QModem, add the custom feed to your OpenWRT build environment and select the `luci-app-qmodem-next` package in `make menuconfig`.
 
 For detailed, step-by-step installation instructions, please refer to the **[Installation Guide](docs/user-guide.md#installation)**.
 

@@ -1,13 +1,13 @@
 # QModem Developer Guide
 
-This document provides a guide for developers looking to understand, extend, or adapt the `luci-app-qmodem` application.
+This document provides a guide for developers looking to understand, extend, or adapt the `luci-app-qmodem-next` application.
 
 ## 1. Project Structure
 
-The `luci-app-qmodem` is the core LuCI application for modem management. Its structure follows the standard LuCI MVC pattern.
+The `luci-app-qmodem-next` is the core LuCI application for modem management. It uses a pure JS LuCI frontend that eliminates the dependency on luci-compat. Its structure follows the modern LuCI pattern.
 
 ```
-luci-app-qmodem/
+luci-app-qmodem-next/
 ├── Makefile              # Build instructions for the package
 ├── htdocs/
 │   └── luci-static/      # Static web assets (JS, CSS, images)

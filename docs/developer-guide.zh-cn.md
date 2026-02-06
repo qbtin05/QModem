@@ -1,13 +1,13 @@
 # QModem 开发者指南
 
-本文档为希望理解、扩展或适配 `luci-app-qmodem` 应用程序的开发者提供指南。
+本文档为希望理解、扩展或适配 `luci-app-qmodem-next` 应用程序的开发者提供指南。
 
 ## 1. 项目结构
 
-`luci-app-qmodem` 是用于调制解调器管理的核心LuCI应用程序。其结构遵循标准的LuCI MVC模式。
+`luci-app-qmodem-next` 是用于调制解调器管理的核心LuCI应用程序。它使用纯 JS LuCI 前端，消除了对 luci-compat 的依赖。其结构遵循现代 LuCI 模式。
 
 ```
-luci-app-qmodem/
+luci-app-qmodem-next/
 ├── Makefile              # 软件包的编译说明
 ├── htdocs/
 │   └── luci-static/      # 静态Web资源 (JS, CSS, 图片)
